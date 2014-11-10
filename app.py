@@ -1,5 +1,5 @@
 from flask import Flask, request, url_for, redirect, render_template
-import urllib2, json
+import urllib2, json, spotipy, sys
 
 app=Flask(__name__)
 
@@ -15,3 +15,17 @@ def getRecipes(tags):
     return results
 
 print getRecipes(["onion","soup"])
+
+def getSongs(tag):
+    sp = spotipy.Spotify()
+    songs = sp.search(q='track:' + tag, type='track')
+    items = songs['tracks']['items']
+    i = 0
+    results = []
+    for item in items:
+        track = items[i]
+        results.append( track['name'] )
+        i = i + 1
+    return results
+    
+print getSongs("soup")
