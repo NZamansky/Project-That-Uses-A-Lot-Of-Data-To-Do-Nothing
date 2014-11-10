@@ -1,0 +1,10 @@
+from flask import Flast, request, url_for, redirect, render_template
+import urllib2, json
+
+app=Flask(__name__)
+
+yummly = "http://api.yummly.com/v1?_app_id=4a5d0d78&_app_key=818e8b8a15bd453e736c1308a331d7f8"
+request = urllib2.urlopen(yummly)
+d=json.loads(request.read())
+for r in d:
+    print r
