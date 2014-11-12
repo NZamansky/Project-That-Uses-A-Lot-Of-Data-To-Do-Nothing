@@ -29,8 +29,6 @@ def getRecipes(tags):
             yummly+=tag+"+"
             request = urllib2.urlopen(yummly)
             d=json.loads(request.read())
- 
-        results=[]
         for r in d['matches']:
             results.append(r['recipeName']+": "+str(r['totalTimeInSeconds']))
         i=i+1
