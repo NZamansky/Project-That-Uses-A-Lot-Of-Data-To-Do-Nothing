@@ -75,32 +75,28 @@ def getWords(headline):
     #return result
 
 
-
-headlines = getHeadlines()
-r = random.randrange( len(headlines) )
-headline = headlines[r]
-headline = headline[5:]
-print "headline", headline
-
-words = getWords(headline)
-print "top",words
-
-recipe = getRecipes(words)
-recipe = recipe[0]
-print "recipe",recipe
-
-song = getSongs(recipe[0].split(':')[0])
-song = song[0]
-print "song",song
-
-#print allTogetherNow()
-
 ########## webapp stuff ############
 
 app = Flask(__name__)
 
 @app.route("/", methods=['GET','POST'])
 def base():
+    headlines = getHeadlines()
+    r = random.randrange( len(headlines) )
+    headline = headlines[r]
+    headline = headline[5:]
+    print "headline", headline
+    
+    words = getWords(headline)
+    print "top",words
+    
+    recipe = getRecipes(words)
+    recipe = recipe[0]
+    print "recipe",recipe
+    
+    song = getSongs(recipe[0].split(':')[0])
+    song = song[0]
+    print "song",song
     return render_template("home.html",headline=headline, recipe=recipe,song=song)
 
 if __name__=="__main__":
