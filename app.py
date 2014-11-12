@@ -22,16 +22,19 @@ def getCombinations(tags):
 #Gets all the recepes corresponding to a set of tags
 def getRecipes(tags):
     yummly = "http://api.yummly.com/v1/api/recipes?_app_id=4a5d0d78&_app_key=818e8b8a15bd453e736c1308a331d7f8&q="
-    tags=getCombinations(tags)
+    #tags=getCombinations(tags)
     i=0
     results=[]
     while len(results)==0:
-        for tag in tags[i]:
-            yummly+=tag+"+"
-            request = urllib2.urlopen(yummly)
-            d=json.loads(request.read())
-        for r in d['matches']:
-            results.append(r['recipeName']+": "+str(r['totalTimeInSeconds']))
+        if tags[i] != None: #if there are tags
+        d = []
+            for tag in tags[i]:
+                yummly+=tag+"+"
+                request = urllib2.urlopen(yummly)
+                d = json.loads(request.read())
+            #print d
+            for r in d['matches']:
+                results.append(r['recipeName']+": "+str(r['totalTimeInSeconds']))
         i=i+1
     return results
 
@@ -62,6 +65,9 @@ def getHeadlines():
     r = praw.Reddit(user_agent='project-that-uses-a-lot-of-data-to-do-nothing')
     headlines = r.get_subreddit('news').get_new(limit=50)
     headlines= [str(x) for x in headlines]
+    return headlines
+   
+def getTopWords(headlines):
     words = {}
     for line in headlines: 
         w = line.translate(None,"""1234567890,./;'[]\-=`~!@#$%^&*()_+{}|:"<>?""").split(' ')
@@ -79,24 +85,29 @@ def getHeadlines():
     return topWords
 
 
-def allTogetherNow():
-    headlines = getHeadlines()
-    recipes = getRecipes(headlines)
-    song = getSongs(recipe[0].split(':')[0])
-    return song
 
+headlines = getHeadlines()
+print "headline", headlines
+topWords = getTopWords(headlines)
+print "top",topWords
+recipe = getRecipes(topWords)
+print "recipe",recipe
+song = getSongs(recipe[0].split(':')[0])
+print "song",song
 
-print allTogetherNow()
+headlines = "headlines"
+recipe = "recipe"
+song = "song"
+#print allTogetherNow()
 
 ########## webapp stuff ############
-'''
+
 app = Flask(__name__)
 
 @app.route("/", methods=['GET','POST'])
 def base():
-    return render_template("home.html")
+    return render_template("home.html",headlines=headlines, recipe=recipe,song=song)
 
 if __name__=="__main__":
     app.debug=True
     app.run()
-'''
