@@ -27,14 +27,12 @@ def getRecipes(tags):
     results=[]
     while len(results)==0:
         if tags[i] != None: #if there are tags
-        d = []
             for tag in tags[i]:
                 yummly+=tag+"+"
                 request = urllib2.urlopen(yummly)
-                d = json.loads(request.read())
-            #print d
-            for r in d['matches']:
-                results.append(r['recipeName']+": "+str(r['totalTimeInSeconds']))
+                d = json.loads(request.read())#print d
+                for r in d['matches']:
+                    results.append(r['recipeName']+": "+str(r['totalTimeInSeconds']))
         i=i+1
     return results
 
@@ -95,9 +93,6 @@ print "recipe",recipe
 song = getSongs(recipe[0].split(':')[0])
 print "song",song
 
-headlines = "headlines"
-recipe = "recipe"
-song = "song"
 #print allTogetherNow()
 
 ########## webapp stuff ############
