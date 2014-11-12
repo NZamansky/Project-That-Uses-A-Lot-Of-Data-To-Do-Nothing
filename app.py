@@ -89,6 +89,7 @@ def getWords(headline):
     #return result
 
 
+<<<<<<< HEAD
 
 headlines = getHeadlines()
 r = random.randrange( len(headlines) )
@@ -124,13 +125,35 @@ for s in song:
 print songs
 #print allTogetherNow()
 
+=======
+>>>>>>> 2b5059a0986a1ea740b03814cedc70174859cee5
 ########## webapp stuff ############
 
 app = Flask(__name__)
 
 @app.route("/", methods=['GET','POST'])
 def base():
+<<<<<<< HEAD
     return render_template("home.html",headline=headline, recipe=recipe,songs=songs)
+=======
+    headlines = getHeadlines()
+    r = random.randrange( len(headlines) )
+    headline = headlines[r]
+    headline = headline[5:]
+    print "headline", headline
+    
+    words = getWords(headline)
+    print "top",words
+    
+    recipe = getRecipes(words)
+    recipe = recipe[0]
+    print "recipe",recipe
+    
+    song = getSongs(recipe[0].split(':')[0])
+    song = song[0]
+    print "song",song
+    return render_template("home.html",headline=headline, recipe=recipe,song=song)
+>>>>>>> 2b5059a0986a1ea740b03814cedc70174859cee5
 
 if __name__=="__main__":
     app.debug=True
