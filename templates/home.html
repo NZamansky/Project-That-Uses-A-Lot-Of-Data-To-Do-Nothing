@@ -23,19 +23,9 @@ wWidth  = $window.width();
 	margin:-70px 0 0 -135px;
 font-family: ;
 background-color: #e8e8ee;
+color:navy;
 }
 
-h1 {
-color: navy;
-}
-
-h2 {
-color: navy;
-}
-
-center {
-
-}
 
 </style>
 
@@ -45,13 +35,19 @@ center {
   <center><h1> A Project That Uses a Lot of Data to do Nothing </h1></center
 
 <br><br>
-<h2>The Headlines For Today Are: {{ headlines }}</h2>
+<h2>A headline for today:</h2> 
+
+{{ headline }}
 
 <br><br>
-<h2>A Recipe That We Found Fitting: {{ recipe }}</h2>
+<h2>A recipe that is fitting:</h2>
+
+{{ recipe }}
 
 <br><br>
-<h2> A Song That Is {{ recipe }} Themed: {{song}} </h2>
+<h2> A song that goes with the recipe: </h2>
+
+{{ song }}
 
 </body>
 </html>

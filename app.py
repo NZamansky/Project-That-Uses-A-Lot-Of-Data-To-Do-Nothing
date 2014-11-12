@@ -1,5 +1,5 @@
 from flask import Flask, request, url_for, redirect, render_template
-import urllib2, json, spotipy, sys, praw
+import urllib2, json, spotipy, sys, praw, random
 
 app=Flask(__name__)
 
@@ -26,13 +26,14 @@ def getRecipes(tags):
     i=0
     results=[]
     while len(results)==0:
-        if tags[i] != None: #if there are tags
+        if tags[i] != '': #if tag isn't empty
             for tag in tags[i]:
                 yummly+=tag+"+"
                 request = urllib2.urlopen(yummly)
                 d = json.loads(request.read())#print d
                 for r in d['matches']:
-                    results.append(r['recipeName']+": "+str(r['totalTimeInSeconds']))
+                    results.append(r['recipeName'])
+                    ##results.append(r['recipeName']+": "+str(r['totalTimeInSeconds']))
         i=i+1
     return results
 
@@ -58,39 +59,38 @@ def getSongs(tag):
         i=i+1
     return results
     
-#Gets the top words in the headlines
+#Gets the top headlines
 def getHeadlines():
     r = praw.Reddit(user_agent='project-that-uses-a-lot-of-data-to-do-nothing')
     headlines = r.get_subreddit('news').get_new(limit=50)
     headlines= [str(x) for x in headlines]
     return headlines
-   
-def getTopWords(headlines):
-    words = {}
-    for line in headlines: 
-        w = line.translate(None,"""1234567890,./;'[]\-=`~!@#$%^&*()_+{}|:"<>?""").split(' ')
-        for word in w:
-            if word not in words:
-                words[word]=1
-            else:
-                words[word]=words[word]+1    
-    freq = []
-    for w in sorted(words, key=words.get, reverse=True):
-        freq.append([w,words[w]])
-    topWords=[]
-    for i in range(10):
-        topWords.append(freq[i][0])
-    return topWords
+
+#takes all of the words from the top headline
+def getWords(headline):
+    words = headline.translate(None,"""1234567890,./;'[]\-=`~!@#$%^&*()_+{}|:"<>?""").split(' ')
+    return words
+   # r = random.randrange( len(words) )
+   # result = words[r]
+    #return result
 
 
 
 headlines = getHeadlines()
-print "headline", headlines
-topWords = getTopWords(headlines)
-print "top",topWords
-recipe = getRecipes(topWords)
+r = random.randrange( len(headlines) )
+headline = headlines[r]
+headline = headline[5:]
+print "headline", headline
+
+words = getWords(headline)
+print "top",words
+
+recipe = getRecipes(words)
+recipe = recipe[0]
 print "recipe",recipe
+
 song = getSongs(recipe[0].split(':')[0])
+song = song[0]
 print "song",song
 
 #print allTogetherNow()
@@ -101,7 +101,7 @@ app = Flask(__name__)
 
 @app.route("/", methods=['GET','POST'])
 def base():
-    return render_template("home.html",headlines=headlines, recipe=recipe,song=song)
+    return render_template("home.html",headline=headline, recipe=recipe,song=song)
 
 if __name__=="__main__":
     app.debug=True
