@@ -94,3 +94,15 @@ print recipe[0]
 songs = getSongs(recipe[0].split(':')[0])
 
 print songs
+
+########## webapp stuff ############
+
+app = Flask(__name__)
+
+@app.route("/", methods=['GET','POST'])
+def base():
+    return render_template("home.html")
+
+if __name__=="__main__":
+    app.debug=True
+    app.run()
