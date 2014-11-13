@@ -59,7 +59,11 @@ def getSongs(tag):
             results.append([track['name'],track['duration_ms']] )
             j = j + 1
         i=i+1
-    return results
+    duplicates=[]
+    for r in results:
+        if r not in duplicates:
+            duplicates.append(r)
+    return duplicates
     
 #Gets the top headlines
 def getHeadlines():
