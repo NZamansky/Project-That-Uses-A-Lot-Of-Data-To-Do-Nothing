@@ -34,7 +34,7 @@ def getRecipes(tags):
                 request = urllib2.urlopen(yummly)
                 d = json.loads(request.read())#print d
                 for r in d['matches']:
-                    results.append(r['recipeName'])
+                    results.append([r['recipeName'],r['totalTimeInSeconds']])
                     ##results.append(r['recipeName']+": "+str(r['totalTimeInSeconds']))
         i=i+1
     return results
@@ -56,7 +56,7 @@ def getSongs(tag):
         j = 0
         for item in items:
             track = items[j]
-            results.append( track['name'] )
+            results.append([track['name'],track['duration_ms']] )
             j = j + 1
         i=i+1
     return results
@@ -89,71 +89,65 @@ def getWords(headline):
     #return result
 
 
-<<<<<<< HEAD
-
-headlines = getHeadlines()
-r = random.randrange( len(headlines) )
-headline = headlines[r]
-headline = headline[5:]
-#print "headline", headline
-newsReel=""
-for i in headlines:
-	newsReel+=i[5:]+"\n"
-print newsReel
-
-words = getWords(newsReel)
-print "top",words
-
-recipe = getRecipes(words)
-recipe = recipe[0]
-print "recipe: ",recipe
-
-song = getSongs(recipe[0].split(':')[0])
-#song = song[0]
-print "songs: ",song
-
-headline=""
-for i in range(len(newsReel)):
-	if ord(newsReel[i])>=128:
-		newsReel=newsReel[:i]+"?"+newsReel[i+1:]
-headline=newsReel.replace('\n','<br>\n')
 
 
-songs=""
-for s in song:
-	songs+=s+"<br>"
-print songs
+
 #print allTogetherNow()
 
-=======
->>>>>>> 2b5059a0986a1ea740b03814cedc70174859cee5
+
 ########## webapp stuff ############
 
 app = Flask(__name__)
 
 @app.route("/", methods=['GET','POST'])
 def base():
-<<<<<<< HEAD
-    return render_template("home.html",headline=headline, recipe=recipe,songs=songs)
-=======
+    #return render_template("home.html",headline=headline, recipe=recipe,recipeTime=recipeTime, songs=songs)
     headlines = getHeadlines()
     r = random.randrange( len(headlines) )
     headline = headlines[r]
     headline = headline[5:]
-    print "headline", headline
-    
-    words = getWords(headline)
+    newsReel=""
+    for i in headlines:
+        newsReel+=i[5:]+"\n"
+    print newsReel
+
+    words = getWords(newsReel)
     print "top",words
-    
+
     recipe = getRecipes(words)
-    recipe = recipe[0]
-    print "recipe",recipe
-    
+    t = recipe[0][1]
+    print "----"
+    print t
+    print "----"
+    recipeTime = str(int(t/60))+":"+str(t%60)
+    recipe = recipe[0][0]
+    print "recipe: ",recipe
+
     song = getSongs(recipe[0].split(':')[0])
-    song = song[0]
-    print "song",song
-    return render_template("home.html",headline=headline, recipe=recipe,song=song)
->>>>>>> 2b5059a0986a1ea740b03814cedc70174859cee5
+#song = song[0]
+    print "songs: ",song
+
+    headline=""
+    for i in range(len(newsReel)):
+	if ord(newsReel[i])>=128:
+            newsReel=newsReel[:i]+"?"+newsReel[i+1:]
+    headline=newsReel.replace('\n','<br>\n')
+
+    
+    lengths=[]
+    l=0
+    for s in song:
+        l+=s[1]
+        if l<t*1000:
+            lengths.append(str(int(s[1])/60000)+":"+str(int((s[1]%60000)/1000)))
+
+    songs=""
+    for i in range(len(lengths)):
+	songs+=song[i][0]+" - "+lengths[i]+"<br>"
+    print songs
+
+
+    return render_template("home.html",headline=headline, recipe=recipe,songs=songs, recipeTime=recipeTime)
 
 if __name__=="__main__":
     app.debug=True
